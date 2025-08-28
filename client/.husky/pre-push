@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+# This hook runs before pushing code to the remote repository
+# It ensures that the code builds successfully before being shared
+# This prevents broken code from being pushed to the repository
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Build the project to ensure it compiles without errors
+# If the build fails, the push will be blocked
+npm run build

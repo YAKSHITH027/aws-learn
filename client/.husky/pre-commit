@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+# This hook runs before every commit
+# It ensures code quality by running linting and type checking
+# If any of these checks fail, the commit will be blocked
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run ESLint to check for code style and potential issues
+npm run lint
+
+# Run TypeScript type checking to catch type errors
+npm run type-check

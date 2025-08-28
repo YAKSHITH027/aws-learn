@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+# This hook runs after the commit message is written but before the commit is created
+# It validates that the commit message follows the conventional commit format
+# If the message doesn't follow the format, the commit will be rejected
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Use commitlint to validate the commit message format
+# $1 contains the path to the commit message file
+npx --no -- commitlint --edit $1
