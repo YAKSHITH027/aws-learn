@@ -151,9 +151,20 @@ const Auth = ({ children }: { children: React.ReactNode }) => {
   // Redirect authenticated users away from auth pages
   useEffect(() => {
     if (user && isAuthPage) {
-      router.push("/");
+      router.push("/search");
+
+      // router.push("/");
     }
   }, [user, isAuthPage, router]);
+
+  if (user && isAuthPage) {
+    router.push("/search");
+    return (
+      <div className="flex justify-center items-center h-screen text-2xl font-semibold">
+        Wait while redirecting...
+      </div>
+    );
+  }
 
   // Allow access to public pages without authentication
   if (!isAuthPage && !isDashboardPage) {

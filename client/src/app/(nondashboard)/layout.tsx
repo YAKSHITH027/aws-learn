@@ -24,9 +24,15 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         setIsLoading(false);
       }
     }
+    setIsLoading(false);
   }, [authUser, router, pathname]);
-
-  if (authLoading || isLoading) return <>Loading...</>;
+  console.log("loading", authLoading, isLoading);
+  if (authLoading || isLoading)
+    return (
+      <div className="flex justify-center items-center h-screen text-2xl font-semibold">
+        Loading...
+      </div>
+    );
 
   return (
     <div className="h-full w-full">
