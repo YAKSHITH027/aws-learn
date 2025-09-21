@@ -32,7 +32,7 @@ const HeroSection = () => {
         dispatch(
           setFilters({
             location: trimmedQuery,
-            coordinates: [lat, lng],
+            coordinates: [lng, lat],
           })
         );
         const params = new URLSearchParams({
@@ -48,47 +48,73 @@ const HeroSection = () => {
   };
 
   return (
-    <div className="relative h-screen">
+    <div className="relative h-screen overflow-hidden">
       <Image
         src="/landing-splash.jpg"
-        alt="Rentiful Rental Platform Hero Section"
+        alt="Renthub Rental Platform Hero Section"
         fill
         className="object-cover object-center"
         priority
       />
-      <div className="absolute inset-0 bg-black bg-opacity-60"></div>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="absolute top-1/3 transform -translate-x-1/2 -translate-y-1/2 text-center w-full"
-      >
-        <div className="max-w-4xl mx-auto px-16 sm:px-12">
-          <h1 className="text-5xl font-bold text-white mb-4">
-            Start your journey to finding the perfect place to call home
-          </h1>
-          <p className="text-xl text-white mb-8">
+      {/* Modern gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900/70 via-slate-800/60 to-slate-900/80"></div>
+      {/* Subtle pattern overlay */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_50%)]"></div>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="text-center w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12"
+        >
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight"
+          >
+            Start your journey to finding the{" "}
+            <span className="bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
+              perfect place
+            </span>{" "}
+            to call home
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="text-lg sm:text-xl text-slate-200 mb-10 max-w-3xl mx-auto leading-relaxed"
+          >
             Explore our wide range of rental properties tailored to fit your
-            lifestyle and needs!
-          </p>
+            lifestyle and needs with our advanced search technology!
+          </motion.p>
 
-          <div className="flex justify-center">
-            <Input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by city, neighborhood or address"
-              className="w-full max-w-lg rounded-none rounded-l-xl border-none bg-white h-12"
-            />
-            <Button
-              onClick={handleLocationSearch}
-              className="bg-secondary-500 text-white rounded-none rounded-r-xl border-none hover:bg-secondary-600 h-12"
-            >
-              Search
-            </Button>
-          </div>
-        </div>
-      </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="flex justify-center"
+          >
+            <div className="w-full max-w-2xl">
+              <div className="flex bg-white/10 backdrop-blur-md rounded-2xl p-2 border border-white/20 shadow-2xl">
+                <Input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search by city, neighborhood or address"
+                  className="flex-1 bg-transparent border-none text-white placeholder:text-slate-300 h-12 px-4 focus:ring-0 focus:outline-none mr-1"
+                />
+                <Button
+                  onClick={handleLocationSearch}
+                  className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white border-none rounded-xl h-12 px-8 font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
+                >
+                  Search
+                </Button>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
     </div>
   );
 };

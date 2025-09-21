@@ -26,17 +26,24 @@ const DiscoverSection = () => {
       whileInView="visible"
       viewport={{ once: true, amount: 0.8 }}
       variants={containerVariants}
-      className="py-12 bg-white mb-16"
+      className="py-20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden"
     >
-      <div className="max-w-6xl xl:max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 xl:px-16">
-        <motion.div variants={itemVariants} className="my-12 text-center">
-          <h2 className="text-3xl font-semibold leading-tight text-gray-800">
-            Discover
+      {/* Background pattern */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(59,130,246,0.1),transparent_50%)]"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(59,130,246,0.05),transparent_50%)]"></div>
+
+      <div className="max-w-6xl xl:max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 xl:px-16 relative">
+        <motion.div variants={itemVariants} className="text-center mb-16">
+          <h2 className="text-4xl sm:text-5xl font-bold leading-tight text-white mb-6">
+            Discover Your{" "}
+            <span className="bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
+              Dream Home
+            </span>
           </h2>
-          <p className="mt-4 text-lg text-gray-600">
+          <p className="text-xl text-slate-300 mb-4">
             Find your Dream Rental Property Today!
           </p>
-          <p className="mt-2 text-gray-500 max-w-3xl mx-auto">
+          <p className="text-slate-400 max-w-3xl mx-auto leading-relaxed">
             Searching for your dream rental property has never been easier. With
             our user-friendly search feature, you can quickly find the perfect
             home that meets all your needs. Start your search today and discover
@@ -83,18 +90,25 @@ const DiscoverCard = ({
   title: string;
   description: string;
 }) => (
-  <div className="px-4 py-12 shadow-lg rounded-lg bg-primary-50 md:h-72">
-    <div className="bg-primary-700 p-[0.6rem] rounded-full mb-4 h-10 w-10 mx-auto">
-      <Image
-        src={imageSrc}
-        width={30}
-        height={30}
-        className="w-full h-full"
-        alt={title}
-      />
+  <div className="group px-6 py-12 bg-white/5 backdrop-blur-sm border border-white/10 rounded-3xl hover:bg-white/10 transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl">
+    <div className="relative mb-6">
+      <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-4 rounded-2xl mx-auto w-16 h-16 flex items-center justify-center shadow-lg group-hover:shadow-blue-500/25 transition-all duration-500">
+        <Image
+          src={imageSrc}
+          width={32}
+          height={32}
+          className="w-8 h-8 filter brightness-0 invert"
+          alt={title}
+        />
+      </div>
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
     </div>
-    <h3 className="mt-4 text-xl font-medium text-gray-800">{title}</h3>
-    <p className="mt-2 text-base text-gray-500">{description}</p>
+    <h3 className="text-xl font-bold text-white mb-4 group-hover:text-blue-300 transition-colors duration-300">
+      {title}
+    </h3>
+    <p className="text-slate-300 leading-relaxed group-hover:text-slate-200 transition-colors duration-300">
+      {description}
+    </p>
   </div>
 );
 

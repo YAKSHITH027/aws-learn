@@ -37,8 +37,14 @@ const Navbar = () => {
       className="fixed top-0 left-0 w-full z-50"
       style={{ height: `${NAVBAR_HEIGHT}px` }}
     >
-      {/* Background with glassmorphism effect */}
-      <div className="absolute inset-0 bg-gradient-to-r from-primary-800 via-primary-700 to-primary-800 backdrop-blur-md bg-opacity-95 border-b border-primary-600/20 shadow-2xl" />
+      {/* Background with modern glassmorphism effect */}
+      <div
+        className={`absolute inset-0 backdrop-blur-xl border-b shadow-2xl ${
+          isDashboardPage
+            ? "bg-gradient-to-r from-primary-800 via-primary-700 to-primary-800 bg-opacity-95 border-primary-600/20"
+            : "bg-gradient-to-r from-slate-900/80 via-slate-800/80 to-slate-900/80 border-slate-700/30"
+        }`}
+      />
 
       <div className="relative flex justify-between items-center w-full h-full px-4 sm:px-6 lg:px-8">
         {/* Left section */}
@@ -59,7 +65,7 @@ const Navbar = () => {
               <div className="relative">
                 <Image
                   src="/logo.svg"
-                  alt="Rentiful Logo"
+                  alt="Renthub Logo"
                   width={28}
                   height={28}
                   className="w-7 h-7 sm:w-8 sm:h-8 transition-transform duration-300 group-hover:rotate-12"
@@ -67,11 +73,23 @@ const Navbar = () => {
                 <div className="absolute inset-0 bg-secondary-500/20 rounded-full blur-sm group-hover:bg-secondary-500/30 transition-all duration-300" />
               </div>
               <div className="text-lg sm:text-xl font-bold tracking-wide">
-                <span className="text-white group-hover:text-primary-100 transition-colors duration-300">
+                <span
+                  className={`transition-colors duration-300 ${
+                    isDashboardPage
+                      ? "text-white group-hover:text-primary-100"
+                      : "text-white group-hover:text-blue-200"
+                  }`}
+                >
                   RENT
                 </span>
-                <span className="text-secondary-400 font-light group-hover:text-secondary-300 transition-colors duration-300">
-                  IFUL
+                <span
+                  className={` transition-colors duration-300 font-semibold ${
+                    isDashboardPage
+                      ? "text-secondary-400 group-hover:text-secondary-300"
+                      : "text-blue-400 group-hover:text-blue-300"
+                  }`}
+                >
+                  HUB
                 </span>
               </div>
             </div>
@@ -112,7 +130,7 @@ const Navbar = () => {
         {/* Center section - Tagline */}
         {!isDashboardPage && (
           <div className="hidden lg:block flex-1 text-center">
-            <p className="text-primary-200/80 text-sm font-medium max-w-md mx-auto">
+            <p className="text-slate-300/90 text-sm font-medium max-w-md mx-auto">
               Discover your perfect rental apartment with our advanced search
             </p>
           </div>
@@ -124,36 +142,102 @@ const Navbar = () => {
             <>
               {/* Notifications */}
               <div className="relative hidden md:block group">
-                <div className="p-2 rounded-lg bg-primary-600/30 hover:bg-primary-600/50 transition-all duration-300 cursor-pointer">
-                  <MessageCircle className="w-5 h-5 text-primary-200 group-hover:text-white transition-colors duration-300" />
+                <div
+                  className={`p-2 rounded-lg transition-all duration-300 cursor-pointer ${
+                    isDashboardPage
+                      ? "bg-primary-600/30 hover:bg-primary-600/50"
+                      : "bg-slate-700/40 hover:bg-slate-600/50"
+                  }`}
+                >
+                  <MessageCircle
+                    className={`w-5 h-5 transition-colors duration-300 ${
+                      isDashboardPage
+                        ? "text-primary-200 group-hover:text-white"
+                        : "text-slate-300 group-hover:text-white"
+                    }`}
+                  />
                 </div>
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-secondary-500 rounded-full border-2 border-primary-700 animate-pulse" />
+                <span
+                  className={`absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 animate-pulse ${
+                    isDashboardPage
+                      ? "bg-secondary-500 border-primary-700"
+                      : "bg-blue-500 border-slate-700"
+                  }`}
+                />
               </div>
 
               <div className="relative hidden md:block group">
-                <div className="p-2 rounded-lg bg-primary-600/30 hover:bg-primary-600/50 transition-all duration-300 cursor-pointer">
-                  <Bell className="w-5 h-5 text-primary-200 group-hover:text-white transition-colors duration-300" />
+                <div
+                  className={`p-2 rounded-lg transition-all duration-300 cursor-pointer ${
+                    isDashboardPage
+                      ? "bg-primary-600/30 hover:bg-primary-600/50"
+                      : "bg-slate-700/40 hover:bg-slate-600/50"
+                  }`}
+                >
+                  <Bell
+                    className={`w-5 h-5 transition-colors duration-300 ${
+                      isDashboardPage
+                        ? "text-primary-200 group-hover:text-white"
+                        : "text-slate-300 group-hover:text-white"
+                    }`}
+                  />
                 </div>
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-secondary-500 rounded-full border-2 border-primary-700 animate-pulse" />
+                <span
+                  className={`absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 animate-pulse ${
+                    isDashboardPage
+                      ? "bg-secondary-500 border-primary-700"
+                      : "bg-blue-500 border-slate-700"
+                  }`}
+                />
               </div>
 
               {/* User Menu */}
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex items-center gap-2 focus:outline-none group">
                   <div className="relative">
-                    <Avatar className="w-8 h-8 sm:w-9 sm:h-9 ring-2 ring-primary-600/50 group-hover:ring-secondary-500/50 transition-all duration-300">
+                    <Avatar
+                      className={`w-8 h-8 sm:w-9 sm:h-9 ring-2 transition-all duration-300 ${
+                        isDashboardPage
+                          ? "ring-primary-600/50 group-hover:ring-secondary-500/50"
+                          : "ring-slate-600/50 group-hover:ring-blue-500/50"
+                      }`}
+                    >
                       <AvatarImage src={authUser.userInfo?.image} />
-                      <AvatarFallback className="bg-gradient-to-br from-primary-600 to-primary-700 text-white font-semibold">
+                      <AvatarFallback
+                        className={`text-white font-semibold ${
+                          isDashboardPage
+                            ? "bg-gradient-to-br from-primary-600 to-primary-700"
+                            : "bg-gradient-to-br from-slate-600 to-slate-700"
+                        }`}
+                      >
                         {authUser.userRole?.[0].toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
-                    <div className="absolute inset-0 rounded-full bg-secondary-500/20 blur-sm group-hover:bg-secondary-500/30 transition-all duration-300" />
+                    <div
+                      className={`absolute inset-0 rounded-full blur-sm transition-all duration-300 ${
+                        isDashboardPage
+                          ? "bg-secondary-500/20 group-hover:bg-secondary-500/30"
+                          : "bg-blue-500/20 group-hover:bg-blue-500/30"
+                      }`}
+                    />
                   </div>
                   <div className="hidden sm:flex items-center gap-1">
-                    <p className="text-primary-200 group-hover:text-white transition-colors duration-300 font-medium text-sm">
+                    <p
+                      className={`transition-colors duration-300 font-medium text-sm ${
+                        isDashboardPage
+                          ? "text-primary-200 group-hover:text-white"
+                          : "text-slate-300 group-hover:text-white"
+                      }`}
+                    >
                       {authUser.userInfo?.name}
                     </p>
-                    <ChevronDown className="w-4 h-4 text-primary-300 group-hover:text-white transition-colors duration-300" />
+                    <ChevronDown
+                      className={`w-4 h-4 transition-colors duration-300 ${
+                        isDashboardPage
+                          ? "text-primary-300 group-hover:text-white"
+                          : "text-slate-400 group-hover:text-white"
+                      }`}
+                    />
                   </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-white/95 backdrop-blur-md border border-primary-200/50 shadow-2xl rounded-xl mt-2 min-w-[200px]">
@@ -206,7 +290,7 @@ const Navbar = () => {
               <Link href="/signin">
                 <Button
                   variant="outline"
-                  className="text-white border-white/30 bg-white/10 backdrop-blur-sm hover:bg-white hover:text-primary-700 rounded-xl px-4 py-2 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                  className="text-white border-white/30 bg-white/10 backdrop-blur-sm hover:bg-white hover:text-slate-800 rounded-xl px-4 py-2 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
                 >
                   Sign In
                 </Button>
@@ -216,7 +300,7 @@ const Navbar = () => {
               <Link href="/signup">
                 <Button
                   variant="secondary"
-                  className="text-white bg-gradient-to-r from-secondary-500 to-secondary-600 hover:from-secondary-600 hover:to-secondary-700 border-0 rounded-xl px-4 py-2 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                  className="text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 border-0 rounded-xl px-4 py-2 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
                 >
                   Sign Up
                 </Button>
