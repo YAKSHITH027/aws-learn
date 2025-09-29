@@ -10,6 +10,10 @@ const prisma = new PrismaClient();
 
 const s3Client = new S3Client({
   region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_SECRET_ACCESS_KEY!,
+    secretAccessKey: process.env.AWS_ACCESS_KEY_ID!,
+  },
 });
 
 export const getProperties = async (
@@ -30,6 +34,7 @@ export const getProperties = async (
       availableFrom,
       latitude,
       longitude,
+      radius,
     } = req.query;
 
     let whereConditions: Prisma.Sql[] = [];
@@ -104,15 +109,15 @@ export const getProperties = async (
     if (latitude && longitude) {
       const lat = parseFloat(latitude as string);
       const lng = parseFloat(longitude as string);
-      const radiusInKilometers = 1000;
-      const degrees = radiusInKilometers / 111; // Converts kilometers to degrees
+      const radiusInKilometers = radius ? Number(radius) : 50; // default 10 km if not passed
+      const radiusMeters = radiusInKilometers * 1000;
 
       whereConditions.push(
         Prisma.sql`ST_DWithin(
-          l.coordinates::geometry,
-          ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326),
-          ${degrees}
-        )`
+      l."coordinates"::geography,
+      ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)::geography,
+      ${radiusMeters}
+    )`
       );
     }
 
@@ -223,22 +228,21 @@ export const createProperty = async (
         return uploadResult.Location;
       })
     );
-
+    const query = `${address}, ${city}, ${postalCode}, ${country}`;
     const geocodingUrl = `https://nominatim.openstreetmap.org/search?${new URLSearchParams(
       {
-        street: address,
-        city,
-        country,
-        postalcode: postalCode,
+        q: query,
         format: "json",
         limit: "1",
       }
     ).toString()}`;
+
     const geocodingResponse = await axios.get(geocodingUrl, {
       headers: {
-        "User-Agent": "RealEstateApp (justsomedummyemail@gmail.com",
+        "User-Agent": "RealEstateApp (justsomedummyemail@gmail.com)",
       },
     });
+
     const [longitude, latitude] =
       geocodingResponse.data[0]?.lon && geocodingResponse.data[0]?.lat
         ? [
