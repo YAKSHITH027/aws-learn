@@ -7,9 +7,9 @@ import { Upload } from "@aws-sdk/lib-storage";
 import axios from "axios";
 
 const prisma = new PrismaClient();
-
+// process.env.AWS_REGION;
 const s3Client = new S3Client({
-  region: process.env.AWS_REGION,
+  region: "ap-south-1",
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
@@ -210,15 +210,14 @@ export const createProperty = async (
       managerCognitoId,
       ...propertyData
     } = req.body;
-
+    // process.env.S3_BUCKET_NAME!;
     const photoUrls = await Promise.all(
       files.map(async (file) => {
         const uploadParams = {
-          Bucket: process.env.S3_BUCKET_NAME!,
+          Bucket: "storeimageforre",
           Key: `properties/${Date.now()}-${file.originalname}`,
           Body: file.buffer,
           ContentType: file.mimetype,
-          ACL: "public-read" as const,
         };
 
         const uploadResult = await new Upload({
