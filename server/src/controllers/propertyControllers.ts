@@ -260,6 +260,14 @@ export const createProperty = async (
     `;
 
     // create property
+    console.log("check amenities", propertyData.amenities);
+    console.log("check highlights", propertyData.highlights);
+    console.log("check", propertyData.amenities.split(","));
+    console.log(
+      ' typeof propertyData.amenities === "string"',
+      typeof propertyData.amenities
+    );
+    console.log("check", typeof propertyData.highlights === "string");
     const newProperty = await prisma.property.create({
       data: {
         ...propertyData,
@@ -268,11 +276,15 @@ export const createProperty = async (
         managerCognitoId,
         amenities:
           typeof propertyData.amenities === "string"
-            ? propertyData.amenities.split(",")
+            ? propertyData.amenities
+                .split(",")
+                .map((amenity: string) => amenity.trim())
             : [],
         highlights:
           typeof propertyData.highlights === "string"
-            ? propertyData.highlights.split(",")
+            ? propertyData.highlights
+                .split(",")
+                .map((highlight: string) => highlight.trim())
             : [],
         isPetsAllowed: propertyData.isPetsAllowed === "true",
         isParkingIncluded: propertyData.isParkingIncluded === "true",
@@ -291,6 +303,7 @@ export const createProperty = async (
 
     res.status(201).json(newProperty);
   } catch (err: any) {
+    console.log("error", err);
     res
       .status(500)
       .json({ message: `Error creating property: ${err.message}` });

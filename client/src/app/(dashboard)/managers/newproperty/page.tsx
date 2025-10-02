@@ -170,20 +170,24 @@ const NewProperty = () => {
                 <CustomFormField
                   name="amenities"
                   label="Amenities"
-                  type="select"
+                  type="multi-select"
+                  placeholder="Select multiple amenities"
                   options={Object.keys(AmenityEnum).map((amenity) => ({
                     value: amenity,
                     label: amenity,
                   }))}
+                  returnAsArray={false}
                 />
                 <CustomFormField
                   name="highlights"
                   label="Highlights"
-                  type="select"
+                  type="multi-select"
+                  placeholder="Select multiple highlights"
                   options={Object.keys(HighlightEnum).map((highlight) => ({
                     value: highlight,
                     label: highlight,
                   }))}
+                  returnAsArray={false}
                 />
               </div>
             </div>

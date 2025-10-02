@@ -23,6 +23,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import { Edit, X, Plus } from "lucide-react";
 import { registerPlugin } from "filepond";
 import { FilePond } from "react-filepond";
@@ -42,6 +44,7 @@ interface FormFieldProps {
     | "textarea"
     | "number"
     | "select"
+    | "multi-select"
     | "switch"
     | "password"
     | "file"
@@ -57,6 +60,7 @@ interface FormFieldProps {
   multiple?: boolean;
   isIcon?: boolean;
   initialValue?: string | number | boolean | string[];
+  returnAsArray?: boolean; // New prop to control return format
 }
 
 export const CustomFormField: React.FC<FormFieldProps> = ({
@@ -73,6 +77,7 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
   multiple = false,
   isIcon = false,
   initialValue,
+  returnAsArray = false,
 }) => {
   const { control } = useFormContext();
 
@@ -113,6 +118,17 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
               ))}
             </SelectContent>
           </Select>
+        );
+      case "multi-select":
+        return (
+          <MultiSelectField
+            field={field}
+            options={options || []}
+            placeholder={placeholder}
+            inputClassName={inputClassName}
+            returnAsArray={returnAsArray}
+            disabled={disabled}
+          />
         );
       case "switch":
         return (
@@ -210,6 +226,119 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
     />
   );
 };
+interface MultiSelectFieldProps {
+  field: ControllerRenderProps<FieldValues, string>;
+  options: { value: string; label: string }[];
+  placeholder?: string;
+  inputClassName?: string;
+  returnAsArray?: boolean;
+  disabled?: boolean;
+}
+
+const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
+  field,
+  options,
+  placeholder,
+  inputClassName,
+  returnAsArray = false,
+  disabled = false,
+}) => {
+  // Parse current value - handle both string and array formats
+  const getCurrentValues = (): string[] => {
+    if (!field.value) return [];
+    if (Array.isArray(field.value)) return field.value;
+    if (typeof field.value === "string") {
+      return field.value
+        .split(",")
+        .map((v) => v.trim())
+        .filter((v) => v);
+    }
+    return [];
+  };
+
+  const currentValues = getCurrentValues();
+
+  // Get available options (not yet selected)
+  const availableOptions = options.filter(
+    (option) => !currentValues.includes(option.value)
+  );
+
+  const handleAddValue = (value: string) => {
+    const newValues = [...currentValues, value];
+    const formattedValue = returnAsArray ? newValues : newValues.join(",");
+    field.onChange(formattedValue);
+  };
+
+  const handleRemoveValue = (value: string) => {
+    const newValues = currentValues.filter((v) => v !== value);
+    const formattedValue = returnAsArray ? newValues : newValues.join(",");
+    field.onChange(formattedValue);
+  };
+
+  return (
+    <div className={`space-y-3 ${inputClassName}`}>
+      {/* Selected items as chips */}
+      {currentValues.length > 0 && (
+        <div className="flex flex-wrap gap-2 p-3 border border-gray-200 rounded-md bg-gray-50">
+          {currentValues.map((value) => {
+            const option = options.find((opt) => opt.value === value);
+            return (
+              <Badge
+                key={value}
+                variant="secondary"
+                className="flex items-center gap-1 px-3 py-1 bg-white border border-gray-300 text-gray-700 hover:bg-gray-100"
+              >
+                <span className="text-sm">{option?.label || value}</span>
+                <button
+                  type="button"
+                  onClick={() => handleRemoveValue(value)}
+                  disabled={disabled}
+                  className="ml-1 hover:bg-gray-200 rounded-full p-0.5 transition-colors"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </Badge>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Dropdown for selecting new items */}
+      {availableOptions.length > 0 && (
+        <Select value="" onValueChange={handleAddValue} disabled={disabled}>
+          <SelectTrigger
+            className={`w-full border-gray-200 p-4 ${
+              currentValues.length > 0 ? "mt-2" : ""
+            }`}
+          >
+            <SelectValue
+              placeholder={placeholder || "Select an option to add"}
+            />
+          </SelectTrigger>
+          <SelectContent className="w-full border-gray-200 shadow">
+            {availableOptions.map((option) => (
+              <SelectItem
+                key={option.value}
+                value={option.value}
+                className="cursor-pointer hover:!bg-gray-100 hover:!text-customgreys-darkGrey"
+              >
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
+
+      {/* Show message when all options are selected */}
+      {availableOptions.length === 0 && options.length > 0 && (
+        <div className="text-sm text-gray-500 p-3 border border-gray-200 rounded-md bg-gray-50">
+          All options have been selected
+        </div>
+      )}
+    </div>
+  );
+};
+
 interface MultiInputFieldProps {
   name: string;
   control: any;
