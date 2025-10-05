@@ -1,4 +1,9 @@
-import { FiltersState, initialState, setFilters } from "@/state";
+import {
+  FiltersState,
+  initialState,
+  setFilters,
+  toggleFiltersFullOpen,
+} from "@/state";
 import { useAppSelector } from "@/state/redux";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -44,11 +49,13 @@ const FiltersFull = () => {
   });
 
   const handleSubmit = () => {
+    dispatch(toggleFiltersFullOpen());
     dispatch(setFilters(localFilters));
     updateURL(localFilters);
   };
 
   const handleReset = () => {
+    dispatch(toggleFiltersFullOpen());
     setLocalFilters(initialState.filters);
     dispatch(setFilters(initialState.filters));
     updateURL(initialState.filters);
