@@ -94,10 +94,10 @@ const SearchPage = () => {
           </div>
           <FiltersFull />
         </div>
-        <div className="flex flex-col md:flex-row w-full gap-3 ">
+        <div className="flex flex-col md:flex-row w-full gap-3">
           <Map />
 
-          <div className="basis-4/12 overflow-y-auto">
+          <div className="md:basis-4/12 overflow-y-auto h-full">
             <Listings />
           </div>
         </div>

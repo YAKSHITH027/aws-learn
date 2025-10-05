@@ -46,7 +46,7 @@ const Map = () => {
   if (isError || !properties) return <div>Failed to fetch properties</div>;
 
   return (
-    <div className="basis-5/12 md:flex-grow relative rounded-xl">
+    <div className="h-96 md:h-auto md:basis-5/12 md:flex-grow relative rounded-xl">
       <div
         className="map-container rounded-xl"
         ref={mapContainerRef}
