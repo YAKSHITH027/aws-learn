@@ -1,20 +1,15 @@
 import { Request, Response } from "express";
 import { PrismaClient, Prisma } from "@prisma/client";
 import { wktToGeoJSON } from "@terraformer/wkt";
-import { S3Client } from "@aws-sdk/client-s3";
 import { Location } from "@prisma/client";
-import { Upload } from "@aws-sdk/lib-storage";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../utils/firebase.config";
+// import { S3Client } from "@aws-sdk/client-s3";
+// import { Upload } from "@aws-sdk/lib-storage";
 import axios from "axios";
 
 const prisma = new PrismaClient();
-// process.env.AWS_REGION;
-const s3Client = new S3Client({
-  region: "ap-south-1",
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-  },
-});
+// Using storage from firebase.config.ts
 
 export const getProperties = async (
   req: Request,
@@ -213,21 +208,23 @@ export const createProperty = async (
     // process.env.S3_BUCKET_NAME!;
     const photoUrls = await Promise.all(
       files.map(async (file) => {
-        const uploadParams = {
-          Bucket: "storeimageforre",
-          Key: `properties/${Date.now()}-${file.originalname}`,
-          Body: file.buffer,
-          ContentType: file.mimetype,
-        };
+        // Create a reference to the file in Firebase Storage
+        const storageRef = ref(
+          storage,
+          `properties/${Date.now()}-${file.originalname}`
+        );
 
-        const uploadResult = await new Upload({
-          client: s3Client,
-          params: uploadParams,
-        }).done();
+        // Upload the file
+        await uploadBytes(storageRef, file.buffer, {
+          contentType: file.mimetype,
+        });
 
-        return uploadResult.Location;
+        // Get the download URL
+        const downloadURL = await getDownloadURL(storageRef);
+        return downloadURL;
       })
     );
+    console.log("photoUrls", photoUrls);
     const query = `${address}, ${city}, ${postalCode}, ${country}`;
     const geocodingUrl = `https://nominatim.openstreetmap.org/search?${new URLSearchParams(
       {
