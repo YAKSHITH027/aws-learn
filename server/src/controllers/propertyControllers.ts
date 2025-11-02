@@ -280,3 +280,16 @@ export const createProperty = async (
       .json({ message: `Error creating property: ${err.message}` });
   }
 };
+export const deleteAllProperties = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    await prisma.property.deleteMany({});
+    res.status(200).json({ message: "All properties deleted successfully." });
+  } catch (err: any) {
+    res
+      .status(500)
+      .json({ message: `Error deleting properties: ${err.message}` });
+  }
+};
