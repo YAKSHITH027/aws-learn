@@ -285,7 +285,15 @@ export const deleteAllProperties = async (
   res: Response
 ): Promise<void> => {
   try {
-    await prisma.property.deleteMany({});
+    // delete dependent records in the correct order to avoid FK violations
+    await prisma.$transaction([
+      prisma.payment.deleteMany({}), // payments -> leases
+      prisma.lease.deleteMany({}), // leases -> properties
+      prisma.application.deleteMany({}), // applications -> properties
+      prisma.property.deleteMany({}), // properties -> locations
+      prisma.location.deleteMany({}), // optional: remove orphaned locations
+    ]);
+
     res.status(200).json({ message: "All properties deleted successfully." });
   } catch (err: any) {
     res
