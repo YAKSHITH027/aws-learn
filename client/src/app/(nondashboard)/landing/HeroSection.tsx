@@ -11,7 +11,7 @@ import { setFilters } from "@/state";
 
 const HeroSection = () => {
   const dispatch = useDispatch();
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState("Udupi");
   const router = useRouter();
 
   const handleLocationSearch = async () => {

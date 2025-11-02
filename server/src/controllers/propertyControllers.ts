@@ -207,7 +207,7 @@ export const createProperty = async (
     } = req.body;
     // process.env.S3_BUCKET_NAME!;
 
-    const query = `${address}, ${city}, ${postalCode}, ${country}`;
+    const query = `${city}, ${postalCode}, ${country}`;
     const geocodingUrl = `https://nominatim.openstreetmap.org/search?${new URLSearchParams(
       {
         q: query,
@@ -221,7 +221,7 @@ export const createProperty = async (
         "User-Agent": "RealEstateApp (justsomedummyemail@gmail.com)",
       },
     });
-
+    console.log("geocodingResponse.data:", geocodingResponse.data);
     const [longitude, latitude] =
       geocodingResponse.data[0]?.lon && geocodingResponse.data[0]?.lat
         ? [
