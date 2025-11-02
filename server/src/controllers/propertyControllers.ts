@@ -141,7 +141,7 @@ export const getProperties = async (
     `;
 
     const properties = await prisma.$queryRaw(completeQuery);
-    await deleteAllProperties(req, res);
+    // await deleteAllProperties(req, res);
     res.json(properties);
   } catch (error: any) {
     res
