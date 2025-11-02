@@ -10,6 +10,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import { storage } from "@/lib/firebase.config";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const NewProperty = () => {
   const [createProperty] = useCreatePropertyMutation();
@@ -39,28 +41,56 @@ const NewProperty = () => {
     },
   });
 
+  // Upload files to Firebase Storage and return public URLs
+  const uploadFilesToFirebase = async (files: File[], managerId: string) => {
+    if (!storage) throw new Error("Firebase storage not initialized");
+    const urls: string[] = [];
+
+    for (const file of files) {
+      const fileRef = ref(
+        storage,
+        `properties/${managerId}/${Date.now()}_${file.name}`
+      );
+      await uploadBytes(fileRef, file);
+      const url = await getDownloadURL(fileRef);
+      urls.push(url);
+    }
+
+    return urls;
+  };
+
   const onSubmit = async (data: PropertyFormData) => {
     if (!authUser?.cognitoInfo?.userId) {
       throw new Error("No manager ID found");
     }
 
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-      if (key === "photoUrls") {
-        const files = value as File[];
-        files.forEach((file: File) => {
-          formData.append("photos", file);
-        });
-      } else if (Array.isArray(value)) {
-        formData.append(key, JSON.stringify(value));
-      } else {
-        formData.append(key, String(value));
-      }
-    });
+    // If photo files are provided, upload them first and replace photoUrls with URLs
+    let photoUrlStrings: string[] = [];
+    const possibleFiles = data.photoUrls as unknown as File[] | string[];
+    if (
+      Array.isArray(possibleFiles) &&
+      possibleFiles.length > 0 &&
+      possibleFiles[0] instanceof File
+    ) {
+      const files = possibleFiles as File[];
+      photoUrlStrings = await uploadFilesToFirebase(
+        files,
+        authUser.cognitoInfo.userId
+      );
+    } else if (Array.isArray(possibleFiles)) {
+      // already URLs
+      photoUrlStrings = possibleFiles as string[];
+    }
 
-    formData.append("managerCognitoId", authUser.cognitoInfo.userId);
+    // Prepare payload as JSON (no FormData)
+    const payload = {
+      ...data,
+      photoUrls: photoUrlStrings,
+      managerCognitoId: authUser.cognitoInfo.userId,
+    };
 
-    await createProperty(formData);
+    // send JSON to server
+    await createProperty(payload as any);
   };
 
   return (

@@ -195,7 +195,6 @@ export const createProperty = async (
   res: Response
 ): Promise<void> => {
   try {
-    const files = req.files as Express.Multer.File[];
     const {
       address,
       city,
@@ -203,28 +202,11 @@ export const createProperty = async (
       country,
       postalCode,
       managerCognitoId,
+      photoUrls,
       ...propertyData
     } = req.body;
     // process.env.S3_BUCKET_NAME!;
-    const photoUrls = await Promise.all(
-      files.map(async (file) => {
-        // Create a reference to the file in Firebase Storage
-        const storageRef = ref(
-          storage,
-          `properties/${Date.now()}-${file.originalname}`
-        );
 
-        // Upload the file
-        await uploadBytes(storageRef, file.buffer, {
-          contentType: file.mimetype,
-        });
-
-        // Get the download URL
-        const downloadURL = await getDownloadURL(storageRef);
-        return downloadURL;
-      })
-    );
-    console.log("photoUrls", photoUrls);
     const query = `${address}, ${city}, ${postalCode}, ${country}`;
     const geocodingUrl = `https://nominatim.openstreetmap.org/search?${new URLSearchParams(
       {
@@ -256,14 +238,7 @@ export const createProperty = async (
     `;
 
     // create property
-    console.log("check amenities", propertyData.amenities);
-    console.log("check highlights", propertyData.highlights);
-    console.log("check", propertyData.amenities.split(","));
-    console.log(
-      ' typeof propertyData.amenities === "string"',
-      typeof propertyData.amenities
-    );
-    console.log("check", typeof propertyData.highlights === "string");
+
     const newProperty = await prisma.property.create({
       data: {
         ...propertyData,
