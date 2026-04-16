@@ -4,11 +4,11 @@ import { getLeasePayments, getLeases } from "../controllers/leaseControllers";
 
 const router = express.Router();
 
-router.get("/", authMiddleware(["manager", "tenant"]), getLeases);
+router.get("/:propertyId", authMiddleware(["manager", "tenant"]), getLeases);
 router.get(
   "/:id/payments",
   authMiddleware(["manager", "tenant"]),
-  getLeasePayments
+  getLeasePayments,
 );
 
 export default router;

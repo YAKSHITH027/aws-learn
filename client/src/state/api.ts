@@ -58,7 +58,7 @@ export const api = createApi({
               user,
               idToken,
               userRole,
-              fetchWithBQ
+              fetchWithBQ,
             );
           }
 
@@ -273,7 +273,7 @@ export const api = createApi({
     }),
 
     getPropertyLeases: build.query<Lease[], number>({
-      query: (propertyId) => `properties/${propertyId}/leases`,
+      query: (propertyId) => `leases/${propertyId}`,
       providesTags: ["Leases"],
       async onQueryStarted(_, { queryFulfilled }) {
         await withToast(queryFulfilled, {
