@@ -25,9 +25,7 @@ const ContactWidget = ({ onOpenModal }: ContactWidgetProps) => {
         </div>
         <div>
           <p>Contact This Property</p>
-          <div className="text-lg font-bold text-primary-800">
-            (424) 340-5574
-          </div>
+          <div className="text-lg font-bold text-primary-800">8496080930</div>
         </div>
       </div>
       <Button

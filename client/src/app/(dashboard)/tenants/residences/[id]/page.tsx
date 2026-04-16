@@ -103,7 +103,7 @@ const ResidenceCard = ({
             </div>
           </div>
           <div className="text-xl font-bold">
-            ${currentLease.rent}{" "}
+            ₹{currentLease.rent}{" "}
             <span className="text-gray-500 text-sm font-normal">/ night</span>
           </div>
         </div>
@@ -210,7 +210,7 @@ const BillingHistory = ({ payments }: { payments: Payment[] }) => {
                 <TableCell>
                   {new Date(payment.paymentDate).toLocaleDateString()}
                 </TableCell>
-                <TableCell>${payment.amountPaid.toFixed(2)}</TableCell>
+                <TableCell>₹{payment.amountPaid.toFixed(2)}</TableCell>
                 <TableCell>
                   <button className="border border-gray-300 text-gray-700 py-2 px-4 rounded-md flex items-center justify-center font-semibold hover:bg-primary-700 hover:text-primary-50">
                     <ArrowDownToLineIcon className="w-4 h-4 mr-1" />
@@ -237,18 +237,18 @@ const Residence = () => {
 
   const { data: leases, isLoading: leasesLoading } = useGetLeasesQuery(
     parseInt(authUser?.cognitoInfo?.userId || "0"),
-    { skip: !authUser?.cognitoInfo?.userId }
+    { skip: !authUser?.cognitoInfo?.userId },
   );
   const { data: payments, isLoading: paymentsLoading } = useGetPaymentsQuery(
     leases?.[0]?.id || 0,
-    { skip: !leases?.[0]?.id }
+    { skip: !leases?.[0]?.id },
   );
 
   if (propertyLoading || leasesLoading || paymentsLoading) return <Loading />;
   if (!property || propertyError) return <div>Error loading property</div>;
 
   const currentLease = leases?.find(
-    (lease) => lease.propertyId === property.id
+    (lease) => lease.propertyId === property.id,
   );
 
   return (
